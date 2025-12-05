@@ -1,6 +1,7 @@
 import { SafeAreaView, ScrollView, Text, View, Image, TouchableOpacity } from 'react-native';
 import { onboardingStyles } from '../styles/onboardingStyles';
 import { useJournal } from '../contexts/JournalContext';
+import BottomNav from '../components/BottomNav';
 
 export const JournalHome = ({ navigation }) => {
   const { entries } = useJournal();
@@ -77,34 +78,7 @@ export const JournalHome = ({ navigation }) => {
         )}
       </ScrollView>
 
-      <View style={onboardingStyles.bottomNavContainer}>
-        <View style={onboardingStyles.bottomNavCard}>
-          <View style={onboardingStyles.bottomNavIconWrapper}>
-            <Image
-              source={require('../../images/homeIcon.png')}
-              style={onboardingStyles.bottomNavIcon}
-            />
-          </View>
-          <View style={onboardingStyles.bottomNavIconWrapper}>
-            <Image
-              source={require('../../images/moodIcon.png')}
-              style={onboardingStyles.bottomNavIcon}
-            />
-          </View>
-          <View style={onboardingStyles.bottomNavIconWrapper}>
-            <Image
-              source={require('../../images/journalIcon.png')}
-              style={onboardingStyles.bottomNavIcon}
-            />
-          </View>
-          <View style={onboardingStyles.bottomNavIconWrapper}>
-            <Image
-              source={require('../../images/analyticsIcon.png')}
-              style={onboardingStyles.bottomNavIcon}
-            />
-          </View>
-        </View>
-      </View>
+      <BottomNav />
     </SafeAreaView>
   );
 };

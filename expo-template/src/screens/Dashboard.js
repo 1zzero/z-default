@@ -1,5 +1,8 @@
 import { Image, SafeAreaView, ScrollView, Text, View, TouchableOpacity } from 'react-native';
+import { useMood } from '../contexts/MoodContext';
+import { useMoodLogs } from '../contexts/MoodLogsContext';
 import { onboardingStyles } from '../styles/onboardingStyles';
+import BottomNav from '../components/BottomNav';
 
 const dayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -32,6 +35,7 @@ const getCurrentWeekDays = () => {
 
 export const Dashboard = ({ navigation, route }) => {
   const name = route?.params?.name?.trim();
+  const { currentMood } = useMood();
   const today = new Date();
   const formattedDate = today.toLocaleDateString('en-US', {
     weekday: 'short',
@@ -41,6 +45,7 @@ export const Dashboard = ({ navigation, route }) => {
   });
 
   const weekDays = getCurrentWeekDays();
+  const { moodLogs } = useMoodLogs();
 
   const activities = [
     {
@@ -51,7 +56,7 @@ export const Dashboard = ({ navigation, route }) => {
     },
     {
       key: 'breathing',
-      label: 'Breathing Exercises',
+      label: 'Calm Sounds',
       icon: require('../../images/lungIcon.png'),
       iconBg: '#c7b8ff',
     },
@@ -77,12 +82,19 @@ export const Dashboard = ({ navigation, route }) => {
       >
         <View style={onboardingStyles.dashboardHeaderCard}>
           <View style={onboardingStyles.dashboardHeaderTopRow}>
-            <View style={onboardingStyles.dashboardDateRow}>
+            <View
+              style={[
+                onboardingStyles.dashboardDateRow,
+                currentMood && { backgroundColor: currentMood.colors[0], paddingHorizontal: 12, paddingVertical: 8, borderRadius: 12 },
+              ]}
+            >
               <Image
                 source={require('../../images/calendarIcon.png')}
-                style={onboardingStyles.calendarIcon}
+                style={[onboardingStyles.calendarIcon, currentMood && { tintColor: '#fff' }]}
               />
-              <Text style={onboardingStyles.dashboardDateText}>{formattedDate}</Text>
+              <Text style={[onboardingStyles.dashboardDateText, currentMood && { color: '#fff' }]}>
+                {formattedDate}
+              </Text>
             </View>
             <Image
               source={require('../../images/settingsIcon.png')}
@@ -95,26 +107,43 @@ export const Dashboard = ({ navigation, route }) => {
           </Text>
 
           <View style={onboardingStyles.calendarStrip}>
-            {weekDays.map((day) => (
-              <View key={day.key} style={onboardingStyles.calendarDay}>
-                <View
-                  style={[
-                    onboardingStyles.calendarDayPill,
-                    day.isToday && onboardingStyles.calendarDayPillToday,
-                  ]}
-                >
-                  <Text
-                    style={[
-                      onboardingStyles.calendarDayLabel,
-                      day.isToday && onboardingStyles.calendarDayLabelToday,
-                    ]}
-                  >
-                    {day.label}
-                  </Text>
-                  <Text style={onboardingStyles.calendarDayNumber}>{day.number}</Text>
+            {weekDays.map((day) => {
+              // compute dateKey for the day (YYYY-MM-DD)
+              const d = new Date(day.key);
+              const y = d.getFullYear();
+              const m = String(d.getMonth() + 1).padStart(2, '0');
+              const dd = String(d.getDate()).padStart(2, '0');
+              const dateKey = `${y}-${m}-${dd}`;
+
+              // find the most recent mood log for this dateKey
+              const logForDay = moodLogs.find((l) => l.dateKey === dateKey);
+
+              const pillStyle = [onboardingStyles.calendarDayPill];
+              const labelStyle = [onboardingStyles.calendarDayLabel];
+              const numberStyle = [onboardingStyles.calendarDayNumber];
+
+              if (logForDay) {
+                pillStyle.push({ backgroundColor: logForDay.mood.colors[0], borderRadius: 8 });
+                labelStyle.push({ color: '#fff' });
+                numberStyle.push({ color: '#fff' });
+              } else if (day.isToday && currentMood) {
+                pillStyle.push({ backgroundColor: currentMood.colors[0], borderRadius: 8 });
+                labelStyle.push({ color: '#fff' });
+                numberStyle.push({ color: '#fff' });
+              } else if (day.isToday) {
+                pillStyle.push(onboardingStyles.calendarDayPillToday);
+                labelStyle.push(onboardingStyles.calendarDayLabelToday);
+              }
+
+              return (
+                <View key={day.key} style={onboardingStyles.calendarDay}>
+                  <View style={pillStyle}>
+                    <Text style={labelStyle}>{day.label}</Text>
+                    <Text style={numberStyle}>{day.number}</Text>
+                  </View>
                 </View>
-              </View>
-            ))}
+              );
+            })}
           </View>
         </View>
 
@@ -129,6 +158,12 @@ export const Dashboard = ({ navigation, route }) => {
                 onPress={() => {
                   if (activity.key === 'journal') {
                     navigation.navigate('JournalHome');
+                  } else if (activity.key === 'breathing') {
+                    navigation.navigate('CalmSounds');
+                  } else if (activity.key === 'resources') {
+                    navigation.navigate('Resources');
+                  } else if (activity.key === 'crisis') {
+                    navigation.navigate('CrisisSupport');
                   }
                 }}
               >
@@ -150,34 +185,7 @@ export const Dashboard = ({ navigation, route }) => {
         </View>
       </ScrollView>
 
-      <View style={onboardingStyles.bottomNavContainer}>
-        <View style={onboardingStyles.bottomNavCard}>
-          <View style={onboardingStyles.bottomNavIconWrapper}>
-            <Image
-              source={require('../../images/homeIcon.png')}
-              style={onboardingStyles.bottomNavIcon}
-            />
-          </View>
-          <View style={onboardingStyles.bottomNavIconWrapper}>
-            <Image
-              source={require('../../images/moodIcon.png')}
-              style={onboardingStyles.bottomNavIcon}
-            />
-          </View>
-          <View style={onboardingStyles.bottomNavIconWrapper}>
-            <Image
-              source={require('../../images/journalIcon.png')}
-              style={onboardingStyles.bottomNavIcon}
-            />
-          </View>
-          <View style={onboardingStyles.bottomNavIconWrapper}>
-            <Image
-              source={require('../../images/analyticsIcon.png')}
-              style={onboardingStyles.bottomNavIcon}
-            />
-          </View>
-        </View>
-      </View>
+      <BottomNav />
     </SafeAreaView>
   );
 };

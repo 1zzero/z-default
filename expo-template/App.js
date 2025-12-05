@@ -15,7 +15,15 @@ import { Dashboard } from './src/screens/Dashboard';
 import { JournalHome } from './src/screens/JournalHome';
 import { NewJournalEntry } from './src/screens/NewJournalEntry';
 import { JournalProvider } from './src/contexts/JournalContext';
+import { MoodProvider } from './src/contexts/MoodContext';
+import { MoodLogsProvider } from './src/contexts/MoodLogsContext';
 import { JournalDetail } from './src/screens/JournalDetail';
+import { BreathingExercises } from './src/screens/BreathingExercises';
+import { CalmSounds } from './src/screens/CalmSounds';
+import { Resources } from './src/screens/Resources';
+import { CrisisSupport } from './src/screens/CrisisSupport';
+import { Analytics } from './src/screens/Analytics';
+import { MoodTracking } from './src/screens/MoodTracking';
 
 const Stack = createNativeStackNavigator();
 
@@ -35,8 +43,10 @@ export default function App() {
   return (
     <>
       <StatusBar style="dark" />
-      <JournalProvider>
-        <NavigationContainer>
+      <MoodLogsProvider>
+        <MoodProvider>
+          <JournalProvider>
+            <NavigationContainer>
           <Stack.Navigator
             screenOptions={{
               headerShown: false,
@@ -48,9 +58,17 @@ export default function App() {
             <Stack.Screen name="JournalHome" component={JournalHome} />
             <Stack.Screen name="NewJournalEntry" component={NewJournalEntry} />
             <Stack.Screen name="JournalDetail" component={JournalDetail} />
+            <Stack.Screen name="CalmSounds" component={CalmSounds} />
+            <Stack.Screen name="BreathingExercises" component={BreathingExercises} />
+            <Stack.Screen name="Resources" component={Resources} />
+            <Stack.Screen name="CrisisSupport" component={CrisisSupport} />
+            <Stack.Screen name="Analytics" component={Analytics} />
+            <Stack.Screen name="MoodTracking" component={MoodTracking} />
           </Stack.Navigator>
         </NavigationContainer>
       </JournalProvider>
+      </MoodProvider>
+      </MoodLogsProvider>
     </>
   );
 }
