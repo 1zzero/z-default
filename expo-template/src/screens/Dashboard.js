@@ -3,6 +3,7 @@ import { useMood } from '../contexts/MoodContext';
 import { useMoodLogs } from '../contexts/MoodLogsContext';
 import { onboardingStyles } from '../styles/onboardingStyles';
 import BottomNav from '../components/BottomNav';
+import { useUser } from '../contexts/UserContext';
 
 const dayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -33,8 +34,8 @@ const getCurrentWeekDays = () => {
   return days;
 };
 
-export const Dashboard = ({ navigation, route }) => {
-  const name = route?.params?.name?.trim();
+export const Dashboard = ({ navigation }) => {
+  const { userName } = useUser();
   const { currentMood } = useMood();
   const today = new Date();
   const formattedDate = today.toLocaleDateString('en-US', {
@@ -103,7 +104,7 @@ export const Dashboard = ({ navigation, route }) => {
           </View>
 
           <Text style={onboardingStyles.dashboardGreeting}>
-            {name ? `Hi, ${name}!` : 'Hi, User!'}
+            {userName ? `Hi, ${userName}!` : 'Hi, User!'}
           </Text>
 
           <View style={onboardingStyles.calendarStrip}>

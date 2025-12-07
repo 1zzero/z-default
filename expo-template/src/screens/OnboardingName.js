@@ -9,9 +9,11 @@ import {
 } from 'react-native';
 import { GradientBackground } from '../components/GradientBackground';
 import { onboardingStyles } from '../styles/onboardingStyles';
+import { useUser } from '../contexts/UserContext';
 
 export const OnboardingName = ({ navigation }) => {
   const [name, setName] = useState('');
+  const { saveUserName } = useUser();
 
   return (
     <GradientBackground>
@@ -37,7 +39,12 @@ export const OnboardingName = ({ navigation }) => {
           <TouchableOpacity
             style={onboardingStyles.primaryCta}
             activeOpacity={0.9}
-            onPress={() => navigation.navigate('Dashboard', { name })}
+            onPress={async () => {
+              if (name.trim()) {
+                await saveUserName(name);
+              }
+              navigation.navigate('Dashboard');
+              }}
           >
             <Text style={onboardingStyles.primaryCtaText}>Get started</Text>
           </TouchableOpacity>

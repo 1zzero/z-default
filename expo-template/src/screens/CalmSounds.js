@@ -11,22 +11,6 @@ const sounds = [
     color: '#4a90e2',
     sound: require('../../sounds/light-rain-109591.mp3'),
   },
-  {
-    id: 'fire',
-    name: 'Fire',
-    description: 'Cozy crackling fire sounds',
-    icon: require('../../images/lungIcon.png'),
-    color: '#ff8a7a',
-    sound: require('../../sounds/fire-crackling-229897.mp3'),
-  },
-  {
-    id: 'ocean',
-    name: 'Ocean',
-    description: 'Soothing ocean waves',
-    icon: require('../../images/lungIcon.png'),
-    color: '#1a3a52',
-    sound: require('../../sounds/ocean-waves-250310.mp3'),
-  },
 ];
 
 export const CalmSounds = ({ navigation }) => {

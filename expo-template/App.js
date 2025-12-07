@@ -24,6 +24,7 @@ import { Resources } from './src/screens/Resources';
 import { CrisisSupport } from './src/screens/CrisisSupport';
 import { Analytics } from './src/screens/Analytics';
 import { MoodTracking } from './src/screens/MoodTracking';
+import { UserProvider } from './src/contexts/UserContext';
 
 const Stack = createNativeStackNavigator();
 
@@ -43,7 +44,8 @@ export default function App() {
   return (
     <>
       <StatusBar style="dark" />
-      <MoodLogsProvider>
+      <UserProvider>
+        <MoodLogsProvider>
         <MoodProvider>
           <JournalProvider>
             <NavigationContainer>
@@ -69,6 +71,7 @@ export default function App() {
       </JournalProvider>
       </MoodProvider>
       </MoodLogsProvider>
+      </UserProvider>
     </>
   );
 }
